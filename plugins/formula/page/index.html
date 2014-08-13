@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>KityFormula公式编辑器</title>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+
+    <link rel="stylesheet" href="assets/styles/page.css">
+    <link rel="stylesheet" href="assets/styles/base.css">
+    <link rel="stylesheet" href="assets/styles/ui.css">
+    <link rel="stylesheet" href="assets/styles/scrollbar.css">
+
+    <script src="../config/ui.conf.js"></script>
+    <script src="/math/static/js/jquery-1.11.1.min.js"></script>
+    <script src="../lib/kitygraph.all.min.js"></script>
+    <script src="../lib/kity-formula-render.all.js"></script>
+    <script src="../lib/kity-formula-parser.all.js"></script>
+    <script src="../lib/kityformula-editor.all.js"></script>
+    <script>
+        jQuery( function ($) {
+
+            var factory = kf.EditorFactory.create( $( "#eidotr" )[ 0 ], {
+                render: {
+                    fontsize: 40
+                },
+                resource: {
+                    path: "../resource/"
+                }
+            } );
+
+            factory.ready( function ( KFEditor ) {
+
+                // this指向KFEditor
+                var source = "\\placeholder";
+
+                if ( top.KF_EDITOR.getRebuild ) {
+
+                    var rebuildSource = top.KF_EDITOR.getRebuild();
+
+                    if ( rebuildSource ) {
+                        source = rebuildSource;
+                    }
+
+                }
+
+                this.execCommand( "render", source );
+                this.execCommand( "focus" );
+
+                top.kfEditor = this;
+
+                // 设置打开dialog时设置公式的句柄
+                top.KF_EDITOR.setOpenHandler( function ( source ) {
+
+                    KFEditor.execCommand( "render", source );
+                    window.setTimeout( function () {
+                        KFEditor.execCommand( "focus" );
+                    }, 0 );
+
+                } );
+                var source = top.KF_EDITOR.getParentEditor().widgets.instances[0].data.math;
+                source = source.slice(2, source.length-2);
+                KFEditor.execCommand('render', source);
+
+            } );
+
+        } );
+    </script>
+</head>
+<body>
+    <div id="eidotr" class="kf-editor" style="width: 778px; height: 498px;"></div>
+</body>
+</html>
