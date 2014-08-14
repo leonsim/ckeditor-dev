@@ -23,6 +23,7 @@ var CKBUILDER_CONFIG = {
 		'node_modules'
 	],
 	plugins: {
+        autogrow: 1,
 		basicstyles: 1,
 		clipboard: 1,
 		colorbutton: 1,
