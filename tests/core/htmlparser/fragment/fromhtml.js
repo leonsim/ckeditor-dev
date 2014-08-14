@@ -392,4 +392,4 @@ bender.test(
 			fragment.writeChildrenHtml( writer, filter, true );
 			assert.areSame( '<p x="1">A<b x="1">B<i x="1">C</i></b></p><div x="1">X</div>', writer.getHtml( true ) );
 		}
-} );
+} );

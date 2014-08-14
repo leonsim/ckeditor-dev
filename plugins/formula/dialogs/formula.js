@@ -56,7 +56,34 @@
             width: 780,
             height: 500,
             resizable: CKEDITOR.DIALOG_RESIZE_NONE,
-            onShow: function() {
+
+            contents: [
+                {
+                id: 'viewEdit',
+                label: '可视化编辑',
+                accessKey: 'F',
+                elements: [ {
+                    type: 'html',
+                    html: '<div style="width: 780px; height: 500px;"><iframe style="width: 100%;height: 100%;" frameborder="0" src="/math/static/ckeditor/plugins/formula/page/index.html"></iframe></div>',
+                    onLoad: function() {
+                        //console.log(widget);
+                    },
+
+                    setup: function( widget ) {
+                        top.cur_widget = widget;
+                        if (top.kfEditor) {
+                            var source = widget.data.math;
+                            source = source.slice(2, source.length-2);
+                            top.kfEditor.execCommand('render', source);
+                            top.kfEditor.execCommand('focus');
+                        }
+                    }
+                } ]
+            }
+            ],
+
+
+            onShow: function(widget) {
                 if ( !inited ) {
                     inited = true;
                     //iframe resize handler
@@ -90,22 +117,12 @@
                     this.getElement().addClass( "kity-formula-dialog" );
 
                 }
-                if (top.kfEditor) {
-                    var source = editor.widgets.instances[0].data.math;
-                    source = source.slice(2, source.length-2);
-                    top.kfEditor.execCommand('render', source);
-                }
-
-                if ( handler && rebuildSource ) {
-                    handler( rebuildSource );
-                }
-
             },
             onOk: function() {
 
                 if ( window.kfEditor ) {
                     //console.log('kf:' + kfEditor.execCommand( "get.source" ));
-                    editor.widgets.instances[0].setData('math', '\\(' + kfEditor.execCommand( "get.source" ) + '\\)');
+                    top.cur_widget.setData('math', '\\(' + kfEditor.execCommand( "get.source" ) + '\\)');
                     //insertFormula( this, kfEditor.execCommand( "get.source" ) );
                     kfEditor.execCommand( "reset" );
                 }
@@ -120,18 +137,7 @@
             },
             onHide: function () {
                 top.KF_EDITOR.clearRebuild();
-            },
-            contents: [
-                {
-                id: 'viewEdit',
-                label: '可视化编辑',
-                accessKey: 'F',
-                elements: [ {
-                    type: 'html',
-                    html: '<div style="width: 780px; height: 500px;"><iframe style="width: 100%;height: 100%;" frameborder="0" src="/math/static/ckeditor/plugins/formula/page/index.html"></iframe></div>'
-                } ]
             }
-            ]
         };
 
     };
