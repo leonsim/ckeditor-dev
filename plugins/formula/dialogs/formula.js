@@ -7,7 +7,7 @@
         lastFormulaEle = null,
         lastFormulaFrame = null;
 
-	var formulaDialog = function(editor) {
+	var formulaDialog = function( editor, dialogType ) {
 
         var inited = false;
 
@@ -74,8 +74,13 @@
                         if (top.kfEditor) {
                             var source = widget.data.math;
                             source = source.slice(2, source.length-2);
+                            console.log('setup:' + source);
                             top.kfEditor.execCommand('render', source);
-                            top.kfEditor.execCommand('focus');
+                            //window.setTimeout(function () {
+                            //    top.kfEditor.execCommand( "focus" );
+                            //}, 100);
+
+                            //top.kfEditor.execCommand('focus');
                         }
                     }
                 } ]
@@ -131,7 +136,7 @@
             onCancel: function () {
 
                 if ( window.kfEditor ) {
-                    kfEditor.execCommand( "reset" );
+                    //kfEditor.execCommand( "reset" );
                 }
 
             },
@@ -142,8 +147,8 @@
 
     };
 
-    CKEDITOR.dialog.add( pluginName, function( editor ) {
-		return formulaDialog(editor);
+	CKEDITOR.dialog.add( pluginName, function( editor ) {
+		return formulaDialog( editor, pluginName );
 	} );
 
 } )();
