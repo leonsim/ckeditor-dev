@@ -66,7 +66,6 @@
                     type: 'html',
                     html: '<div style="width: 780px; height: 500px;"><iframe style="width: 100%;height: 100%;" frameborder="0" src="/math/static/ckeditor/plugins/formula/page/index.html"></iframe></div>',
                     onLoad: function() {
-                        //console.log(widget);
                     },
 
                     setup: function( widget ) {
@@ -75,11 +74,10 @@
                         if (editor.kfeditor) {
                             var source = widget.data.math;
                             source = source.slice(2, source.length-2);
-                            console.log('setup:' + source);
                             editor.kfeditor.execCommand('render', source);
-                            //window.setTimeout(function () {
-                            //    top.kfEditor.execCommand( "focus" );
-                            //}, 100);
+                            window.setTimeout(function () {
+                                editor.kfeditor.execCommand( "focus" );
+                            }, 100);
 
                             //top.kfEditor.execCommand('focus');
                         }
