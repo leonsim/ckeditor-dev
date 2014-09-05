@@ -75,11 +75,6 @@
                             var source = widget.data.math;
                             source = source.slice(2, source.length-2);
                             editor.kfeditor.execCommand('render', source);
-                            window.setTimeout(function () {
-                                editor.kfeditor.execCommand( "focus" );
-                            }, 100);
-
-                            //top.kfEditor.execCommand('focus');
                         }
                     }
                 } ]
