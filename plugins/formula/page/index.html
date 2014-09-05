@@ -51,12 +51,12 @@
                 }
                 */
 
-                top.kfEditor = this;
+                top.editor.kfeditor = this;
 
                 console.log('first:' + source);
                 this.execCommand( "render", source );
                 window.setTimeout(function () {
-                    top.kfEditor.execCommand( "focus" );
+                    top.editor.kfeditor.execCommand( "focus" );
                 }, 100);
                 //this.execCommand( "focus" );
 
@@ -74,7 +74,6 @@
                 } );
                 */
             });
-
         } );
     </script>
 </head>

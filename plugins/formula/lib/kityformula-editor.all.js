@@ -1,4 +1,11 @@
-
+/*!
+ * ====================================================
+ * Kity Formula Editor - v1.0.0 - 2014-09-04
+ * https://github.com/kitygraph/formula
+ * GitHub: https://github.com/kitygraph/formula.git 
+ * Copyright (c) 2014 Baidu Kity Group; Licensed MIT
+ * ====================================================
+ */
 
 (function () {
 var _p = {
@@ -347,7 +354,6 @@ _p[7] = {
                 return this.latexInput.value.replace(/\\placeholder/g, "");
             },
             setSource: function(value) {
-                console.log('setSource:' + value);
                 this.latexInput.value = value;
             },
             updateLatexMode: function(mode) {
@@ -371,9 +377,17 @@ _p[7] = {
                 this.updateLatex();
             },
             insertStr: function(str) {
-                var latexInfo = this.kfEditor.requestService("syntax.serialization"), originString = latexInfo.str;
-                // 拼接latex字符串
-                originString = originString.substring(0, latexInfo.startOffset) + " " + str + " " + originString.substring(latexInfo.endOffset);
+                var originString = null, latexInfo = null;
+                str = " " + str + " ";
+                if (this.latexInput === this.kfEditor.getDocument().activeElement) {
+                    this.latexInput.setRangeText(str);
+                    originString = this.latexInput.value;
+                } else {
+                    latexInfo = this.kfEditor.requestService("syntax.serialization");
+                    originString = latexInfo.str;
+                    // 拼接latex字符串
+                    originString = originString.substring(0, latexInfo.startOffset) + str + originString.substring(latexInfo.endOffset);
+                }
                 this.restruct(originString);
                 this.updateInput();
                 this.kfEditor.requestService("ui.update.canvas.view");
@@ -515,19 +529,21 @@ _p[7] = {
                 }
             },
             newLine: function() {
-                var latexInfo = this.kfEditor.requestService("syntax.serialization"), match = null, source = null, pattern = /\\begin\{cases\}[\s\S]*?\\end\{cases\}/gi, originString = latexInfo.str;
+                var latexInfo = this.kfEditor.requestService("syntax.serialization"), match = null, source = null, index = 0, pattern = /\\begin\{cases\}[\s\S]*?\\end\{cases\}/gi, originString = latexInfo.str;
                 while (match = pattern.exec(originString)) {
-                    source = match[0];
-                    if (source.indexOf(CURSOR_CHAR) === -1) {
-                        source = null;
+                    index = match.index;
+                    match = match[0];
+                    if (match.indexOf(CURSOR_CHAR) === -1) {
+                        match = null;
                         continue;
                     } else {
                         break;
                     }
                 }
-                if (!source) {
+                if (!match) {
                     return;
                 }
+                source = originString.substring(index, match.length + index);
                 source = source.replace("\\begin{cases}", "").replace("\\end{cases}", "");
                 source = source.split("\\\\");
                 for (var i = 0, len = source.length; i < len; i++) {
@@ -538,9 +554,10 @@ _p[7] = {
                     }
                 }
                 source = "\\begin{cases}" + source.join("\\\\") + "\\end{cases}";
-                this.inputBox.value = source;
-                this.inputBox.selectionStart = source.indexOf(CURSOR_CHAR);
-                this.inputBox.selectionEnd = source.lastIndexOf(CURSOR_CHAR);
+                originString = originString.substring(0, index) + source + originString.substring(index + match.length);
+                this.inputBox.value = originString;
+                this.inputBox.selectionStart = originString.indexOf(CURSOR_CHAR);
+                this.inputBox.selectionEnd = originString.lastIndexOf(CURSOR_CHAR);
                 this.processingInput();
             },
             processUserCtrl: function(e) {
@@ -2577,7 +2594,6 @@ _p[33] = {
                 return this.formula;
             },
             render: function(latexStr) {
-                console.log('kf:render:' + latexStr);
                 var parsedTree = this.kfEditor.requestService("parser.parse", latexStr, true), objTree = this.assembly.regenerateBy(parsedTree);
                 // 更新语法模块所维护的树
                 this.kfEditor.requestService("syntax.update.objtree", objTree);
@@ -2768,6 +2784,9 @@ _p[34] = {
             },
             // 选中给定ID节点的父容器
             selectParentContainer: function(groupId) {
+                if (this.parentComponent.isRootNode(groupId)) {
+                    return this.parentComponent.getCursorRecord();
+                }
                 var currentGroupNode = this.parentComponent.getGroupObject(groupId).node, parentContainerInfo = this.kfEditor.requestService("position.get.group", currentGroupNode), // 当前组在父容器中的索引
                 index = this.kfEditor.requestService("position.get.index", parentContainerInfo.groupObj, currentGroupNode);
                 // 返回新的光标信息

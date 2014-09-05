@@ -70,12 +70,13 @@
                     },
 
                     setup: function( widget ) {
+                        top.editor = editor;
                         top.cur_widget = widget;
-                        if (top.kfEditor) {
+                        if (editor.kfeditor) {
                             var source = widget.data.math;
                             source = source.slice(2, source.length-2);
                             console.log('setup:' + source);
-                            top.kfEditor.execCommand('render', source);
+                            editor.kfeditor.execCommand('render', source);
                             //window.setTimeout(function () {
                             //    top.kfEditor.execCommand( "focus" );
                             //}, 100);
@@ -124,21 +125,15 @@
                 }
             },
             onOk: function() {
-
-                if ( window.kfEditor ) {
-                    //console.log('kf:' + kfEditor.execCommand( "get.source" ));
-                    top.cur_widget.setData('math', '\\(' + kfEditor.execCommand( "get.source" ) + '\\)');
-                    //insertFormula( this, kfEditor.execCommand( "get.source" ) );
-                    kfEditor.execCommand( "reset" );
+                if ( editor.kfeditor ) {
+                    top.cur_widget.setData('math', '\\(' + editor.kfeditor.execCommand( "get.source" ) + '\\)');
+                    editor.kfeditor.execCommand( "reset" );
                 }
-
             },
             onCancel: function () {
-
-                if ( window.kfEditor ) {
-                    //kfEditor.execCommand( "reset" );
+                if ( editor.kfeditor ) {
+                    editor.kfeditor.execCommand( "reset" );
                 }
-
             },
             onHide: function () {
                 top.KF_EDITOR.clearRebuild();
