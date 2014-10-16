@@ -1856,7 +1856,7 @@ _p[28] = {
                         this.updateHeight(-height * 100);
                     }
                 } else {
-                    this.updateHeight(100);
+                    this.updateHeight(Math.ceil((shapeHeight - this.lastHeight) / 100) * 100);
                 }
             },
             updateHeight: function(diff) {

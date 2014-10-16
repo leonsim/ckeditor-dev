@@ -4327,19 +4327,17 @@ _p[31] = {
             }
         });
         function preload(doc, fontInfo, callback) {
-            $.get(fontInfo.meta.src, function(data, state) {
-                if (state === "success") {
-                    applyFonts(doc, fontInfo);
-                }
+            window.setTimeout(function() {
+                applyFonts(doc, fontInfo);
                 callback();
-            });
+            }, 0);
         }
         function complete(doc, callback) {
             window.setTimeout(function() {
                 initFontSystemInfo(doc);
                 removeTmpNode();
                 callback();
-            }, 100);
+            }, 0);
         }
         function applyFonts(doc, fontInfo) {
             var node = document.createElement("div"), fontFamily = fontInfo.meta.fontFamily;
@@ -4790,7 +4788,6 @@ _p[36] = {
                 nVdash: "⊮",
                 nvDash: "⊭",
                 nVDash: "⊯",
-                perp: "⊥",
                 pitchfork: "⋔",
                 propto: "∝",
                 shortmid: "⏐",
@@ -4844,7 +4841,7 @@ _p[36] = {
                 ldots: "…",
                 "#": "#",
                 bot: "⊥",
-                prep: "⊥",
+                perp: "⊥",
                 angle: "∠",
                 backprime: "‵",
                 bigstar: "★",

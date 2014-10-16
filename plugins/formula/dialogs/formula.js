@@ -1,25 +1,26 @@
-﻿( function() {
+﻿/**
+ * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or http://ckeditor.com/license
+ */
 
-    var pluginName = 'formula',
-        rebuildSource = null,
-        handler = null,
-        rebuildFrame = null,
-        lastFormulaEle = null,
-        lastFormulaFrame = null;
+( function() {
 
-	var formulaDialog = function( editor, dialogType ) {
+    var pluginName = 'formula';
 
-        var inited = false;
+	var formulaDialog = function( editor, uniqueId ) {
+
+        var inited = false,
+            formulaEditor = null,
+            dialog = this;
 
         function insertFormula ( dialog, source ) {
 
             var ele = null;
 
-            if ( rebuildSource !== null ) {
-                ele = rebuildFrame;
+            if ( window.TMP_KF_SOURCE ) {
+                ele = window.TMP_KF_FRAME;
                 ele.setAttribute( "data-source", source );
                 ele.setAttribute( "src", getMathjaxPath( dialog, source ) );
-                lastFormulaFrame = ele;
             } else {
                 ele = editor.document.createElement( 'iframe' );
                 ele.addClass( "kf-formula-expression" );
@@ -27,12 +28,10 @@
                 ele.setAttribute( "frameborder", "0" );
                 ele.setAttribute( "style", "vertical-align: middle; width: 100px; height: 18px;" );
                 ele.setAttribute( "data-source", source );
+                window.TMP_KF_SOURCE = source;
                 ele.setAttribute( "src", getMathjaxPath( dialog, source ) );
-                editor.insertElement( ele );
-                lastFormulaFrame = ele.$;
+                editor.insertHtml( ele.$.outerHTML, "unfiltered_html" );
             }
-
-            kfEditor.execCommand( "reset" );
 
         }
 
@@ -52,91 +51,99 @@
         }
 
         return {
-            title: '公式',
-            width: 780,
-            height: 500,
-            resizable: CKEDITOR.DIALOG_RESIZE_NONE,
+				title: '公式',
+				width: 780,
+				height: 500,
+                resizable: CKEDITOR.DIALOG_RESIZE_NONE,
+				onShow: function() {
 
-            contents: [
-                {
-                id: 'viewEdit',
-                label: '可视化编辑',
-                accessKey: 'F',
-                elements: [ {
-                    type: 'html',
-                    html: '<div style="width: 780px; height: 500px;"><iframe style="width: 100%;height: 100%;" frameborder="0" src="/math/static/ckeditor/plugins/formula/page/index.html"></iframe></div>',
-                    onLoad: function() {
-                    },
+                    var dialog = this;
 
-                    setup: function( widget ) {
-                        top.editor = editor;
-                        top.cur_widget = widget;
-                        if (editor.kfeditor) {
-                            var source = widget.data.math;
-                            source = source.slice(2, source.length-2);
-                            editor.kfeditor.execCommand('render', source);
-                        }
+                    if ( !top.KF_EDITOR ) {
+                        top.KF_EDITOR = [];
                     }
-                } ]
-            }
-            ],
 
+                    if ( !inited ) {
+                        inited = true;
+                        // 注册引用, 获取ckeditor
+                        top.KF_EDITOR[ uniqueId ] = {
+                            setFormulaEditor: function ( editor ) {
+                                formulaEditor = editor;
+                                editor.execCommand( "resize.notify", function ( val ) {
 
-            onShow: function(widget) {
-                if ( !inited ) {
-                    inited = true;
-                    //iframe resize handler
-                    top.KF_RESIZE_HANDLER = function ( width, height ) {
-                        if ( lastFormulaFrame ) {
-                            lastFormulaFrame.style.width = width + 'px';
-                            lastFormulaFrame.style.height = height + 'px';
+                                    if ( !editor._ck_lastHeight ) {
+                                        editor._ck_lastHeight = 500;
+                                    }
+
+                                    editor._ck_lastHeight += val;
+
+                                    dialog.resize( 780, editor._ck_lastHeight );
+
+                                    dialog.getElement().findOne( ".kf-ck-container" ).setSize( 'height', editor._ck_lastHeight );
+
+                                } );
+                            }
+                        };
+
+                        this.getElement().addClass( "kity-formula-dialog" );
+
+                    } else {
+
+                        if ( !formulaEditor ) {
+                            return ;
                         }
-                    };
-                    // 注册引用, 获取ckeditor
-                    top.KF_EDITOR = {
-                        getParentEditor: function () {
-                            return editor;
-                        },
-                        setRebuild: function ( source, frame ) {
-                            rebuildSource = source;
-                            rebuildFrame = frame;
-                        },
-                        getRebuild: function () {
-                            return rebuildSource;
-                        },
-                        clearRebuild: function () {
-                            rebuildSource = null;
-                            rebuildFrame = null;
-                        },
-                        setOpenHandler: function ( openHandler ) {
-                            handler = openHandler;
+
+                        if ( window.TMP_KF_SOURCE ) {
+                            formulaEditor.execCommand( "render", window.TMP_KF_SOURCE );
+                            window.tt = formulaEditor;
                         }
-                    };
 
-                    this.getElement().addClass( "kity-formula-dialog" );
+                        window.setTimeout( function () {
+                            formulaEditor.execCommand( "focus" );
+                        }, 0 );
 
-                }
-            },
-            onOk: function() {
-                if ( editor.kfeditor ) {
-                    top.cur_widget.setData('math', '\\(' + editor.kfeditor.execCommand( "get.source" ) + '\\)');
-                    editor.kfeditor.execCommand( "reset" );
-                }
-            },
-            onCancel: function () {
-                if ( editor.kfeditor ) {
-                    editor.kfeditor.execCommand( "reset" );
-                }
-            },
-            onHide: function () {
-                top.KF_EDITOR.clearRebuild();
-            }
+                    }
+
+				},
+				onOk: function() {
+
+                    if ( formulaEditor ) {
+                        insertFormula( this, formulaEditor.execCommand( "get.source" ) );
+                        formulaEditor.execCommand( "reset" );
+                    }
+
+				},
+                onHide: function () {
+                    window.TMP_KF_SOURCE = null;
+                    window.TMP_KF_FRAME = null;
+                    if ( formulaEditor ) {
+                        formulaEditor.execCommand( "reset" );
+                    }
+                },
+				contents: [
+					{
+                        id: 'viewEdit',
+                        label: '可视化编辑',
+                        accessKey: 'F',
+                        elements: [ {
+                            type: 'html',
+                            html: '<div class="kf-ck-container" style="width: 780px; height: 500px;"><iframe style="width: 100%;height: 100%;" frameborder="0" src="' + getHTML( '/math/static/ckeditor/plugins/formula/page/index.html', uniqueId ) +'"></iframe></div>'
+                        } ]
+                    }
+				]
         };
 
     };
 
+    function getHTML ( url, uniqueId ) {
+
+        return url + ( window.TMP_KF_SOURCE ? '?' + encodeURI( window.TMP_KF_SOURCE ) : '' ) +'#'+ uniqueId;
+
+    }
+
+
 	CKEDITOR.dialog.add( pluginName, function( editor ) {
-		return formulaDialog( editor, pluginName );
+		return formulaDialog( editor, (+new Date() + "" + Math.random()).replace( ".", "" ) );
 	} );
 
 } )();
