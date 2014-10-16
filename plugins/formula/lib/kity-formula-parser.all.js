@@ -1067,11 +1067,11 @@ _p[30] = {
 _p[31] = {
     value: function() {
         return function(info, processedStack, unprocessedStack) {
-            var char = unprocessedStack.shift();
-            if (typeof char === "object" && char.name === "combination") {
-                char = char.operand.join("");
+            var c = unprocessedStack.shift();
+            if (typeof c === "object" && c.name === "combination") {
+                c = c.operand.join("");
             }
-            info.operand = [ char ];
+            info.operand = [ c ];
             delete info.handler;
             return info;
         };
@@ -1765,8 +1765,8 @@ _p[55] = {
             }
             return reverseHandlerTable[reverseHandlerName].call(tree, operands, options);
         }
-        function isSpecialCharacter(char) {
-            return !!SPECIAL_LIST[char];
+        function isSpecialCharacter(c) {
+            return !!SPECIAL_LIST[c];
         }
     }
 };
