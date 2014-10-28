@@ -56,7 +56,7 @@
                             frame = doc.createElement( 'iframe', {
                                 attributes: {
                                     width: editor.container.getSize( 'width' ) - 2,
-                                    height: 550,
+                                    height: 300,
                                     frameborder: 0
                                 },
                                 styles: {
