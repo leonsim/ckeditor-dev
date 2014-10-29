@@ -17,7 +17,7 @@ CKEDITOR.editorConfig = function( config ) {
 
 	// The toolbar groups arrangement, optimized for two toolbar rows.
 	config.toolbarGroups = [
-		{ name: 'clipboard',   groups: [ 'undo' ] },
+		//{ name: 'clipboard',   groups: [ 'undo' ] },
 		{ name: 'insert' }
 		//{ name: 'forms' },
 		//{ name: 'document',	   groups: [ 'mode'] }
@@ -34,6 +34,7 @@ CKEDITOR.editorConfig = function( config ) {
 	config.removeDialogTabs = 'image:advanced;link:advanced';
 
     config.mathJaxLib = '/math/static/mathjax/MathJax.js';
+    //config.removePlugins = 'toolbar,elementspath';
     config.removePlugins = 'elementspath';
     //config.resize_enabled = false;
     config.autoGrow_minHeight = 40;

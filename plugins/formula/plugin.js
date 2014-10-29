@@ -126,7 +126,6 @@
                 command: commandName,
                 toolbar: 'insert'
             } );
-
         }
     } );
 
