@@ -19,8 +19,9 @@
       MathJax.Hub.Register.MessageHook("End Process", function (message) {
         document.getElementById( "loadingIcon" ).style.display = "none";
         document.getElementById( "formula" ).style.display = "inline-block";
+
+        var formula = document.getElementById( "formula" );
         if ( top.KF_RESIZE_HANDLER ) {
-            var formula = document.getElementById( "formula" );
             top.KF_RESIZE_HANDLER( formula.scrollWidth, formula.scrollHeight );
         }
       });

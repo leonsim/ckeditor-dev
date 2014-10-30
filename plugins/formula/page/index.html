@@ -200,10 +200,25 @@
                         height: "18px"
                     }
                 } );
-
                 ele.addClass( "kf-formula-expression" );
 
                 ckEditor.insertElement( ele );
+
+                ele.$.contentWindow.top.KF_RESIZE_HANDLER = function(w, h) {
+                    ckEditor.fire('lockSnapshot');
+
+                    ele.setStyles({
+                            height:0,
+                            width:0
+                    });
+                    ele.setStyles({
+                            height: h + 'px',
+                            width: w + 'px'
+                    });
+
+                    ckEditor.fire('unlockSnapshot');
+                    ckEditor.execCommand( 'autogrow' );
+                };
             }
 
         }
