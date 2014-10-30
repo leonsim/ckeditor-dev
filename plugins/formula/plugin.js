@@ -97,7 +97,8 @@
 
             editor.once( "instanceReady", function () {
                 editor.document.$.__ckEditor = editor;
-            } );
+                editor.execCommand(commandName);
+            });
 
             editor.clear = function () {
                 editor.__kf_cache = null;
@@ -125,7 +126,7 @@
                 label: '公式',
                 command: commandName,
                 toolbar: 'insert'
-            } );
+            });
         }
     } );
 

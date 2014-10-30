@@ -34,8 +34,8 @@ CKEDITOR.editorConfig = function( config ) {
 	config.removeDialogTabs = 'image:advanced;link:advanced';
 
     config.mathJaxLib = '/math/static/mathjax/MathJax.js';
-    //config.removePlugins = 'toolbar,elementspath';
-    config.removePlugins = 'elementspath';
+    config.removePlugins = 'toolbar,elementspath';
+    //config.removePlugins = 'elementspath';
     //config.resize_enabled = false;
     config.autoGrow_minHeight = 40;
     config.autoGrow_onStartup = true;
