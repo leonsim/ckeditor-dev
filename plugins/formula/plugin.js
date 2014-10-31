@@ -116,11 +116,6 @@
                 editor.execCommand( 'insertformula' );
             };
 
-            editor.__kf_close = function () {
-                editor.__kfEditorFrame.hide();
-                editor.__open_state = false;
-            };
-
             // Register the toolbar button.
             editor.ui.addButton && editor.ui.addButton( 'Formula', {
                 label: '公式',
