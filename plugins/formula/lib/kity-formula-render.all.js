@@ -1,6 +1,6 @@
 /*!
  * ====================================================
- * Kity Formula Render - v1.0.0 - 2014-10-27
+ * Kity Formula Render - v1.0.0 - 2014-11-01
  * https://github.com/kitygraph/formula
  * GitHub: https://github.com/kitygraph/formula.git 
  * Copyright (c) 2014 Baidu Kity Group; Licensed MIT
@@ -37,7 +37,7 @@ var _p = {
     }
 };
 
-/**
+/*!
  * canvg库封装
  * canvg官网： https://code.google.com/p/canvg/
  */
@@ -3243,7 +3243,7 @@ _p[0] = {
     }
 };
 
-/**
+/*!
  * 输出转换器，提供输出支持
  */
 _p[1] = {
@@ -3318,7 +3318,7 @@ _p[1] = {
     }
 };
 
-/**
+/*!
  * 所有字符的列表
  */
 _p[2] = {
@@ -4331,7 +4331,7 @@ _p[32] = {
     }
 };
 
-/**
+/*!
  * 字体信息检测模板，用于检测浏览器的字体信息
  */
 _p[33] = {
@@ -4340,7 +4340,7 @@ _p[33] = {
     }
 };
 
-/**
+/*!
  * 字体安装器
  */
 _p[34] = {
@@ -4369,9 +4369,11 @@ _p[34] = {
                 });
             },
             createFontStyle: function(fontInfo) {
-                var stylesheet = this.doc.createElement("style"), tpl = '@font-face{\nfont-family: "${fontFamily}";\nsrc: url("${src}");\n}';
+                var stylesheet = this.doc.createElement("style");
+                //tpl = '@font-face{\nfont-family: "${fontFamily}";\nsrc: url("${src}");\n}';
                 stylesheet.setAttribute("type", "text/css");
-                stylesheet.innerHTML = tpl.replace("${fontFamily}", fontInfo.meta.fontFamily).replace("${src}", fontInfo.meta.src);
+                //stylesheet.innerHTML = tpl.replace( '${fontFamily}', fontInfo.meta.fontFamily )
+                //                           .replace( '${src}', fontInfo.meta.src );
                 this.doc.head.appendChild(stylesheet);
             }
         });
@@ -4430,7 +4432,7 @@ _p[34] = {
     }
 };
 
-/**
+/*!
  * 字体管理器
  */
 _p[35] = {
@@ -4456,7 +4458,7 @@ _p[35] = {
     }
 };
 
-/**
+/*!
  * 双线字体
  */
 _p[36] = {
@@ -4498,7 +4500,7 @@ _p[38] = {
     }
 };
 
-/**
+/*!
  * 花体
  */
 _p[39] = {
@@ -4512,7 +4514,7 @@ _p[39] = {
     }
 };
 
-/**
+/*!
  * 字体主文件
  */
 _p[40] = {
@@ -4943,7 +4945,7 @@ _p[40] = {
     }
 };
 
-/**
+/*!
  * 罗马字体
  */
 _p[41] = {
@@ -5344,7 +5346,7 @@ _p[48] = {
     }
 };
 
-/**
+/*!
  * 上下标控制器
  */
 _p[49] = {
@@ -6394,7 +6396,7 @@ _p[66] = {
     }
 };
 
-/**
+/*!
  * 所有符号的基类
  * @abstract
  */
@@ -6439,7 +6441,7 @@ _p[67] = {
     }
 };
 
-/**
+/*!
  * 系统项目配置文件.
  */
 _p[68] = {
@@ -6468,7 +6470,7 @@ _p[68] = {
     }
 };
 
-/**
+/*!
  * 启动代码
  */
 _p[69] = {

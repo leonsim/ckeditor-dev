@@ -93,6 +93,13 @@
 
                 var source = hashParams.source || '\\placeholder';
 
+                this.onInput(function(value) {
+                    return value;
+                    var ans = value.replace(/(?!\\)sin/g, '\\sin');
+                    console.log(ans);
+                    return ans;
+                });
+
                 this.execCommand( "render", source );
                 this.execCommand( "focus" );
 

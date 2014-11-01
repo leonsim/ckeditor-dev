@@ -391,7 +391,7 @@ _p[7] = {
                 this.updateLatex();
             },
             insertStr: function(str) {
-                var originString = null, latexInfo = null;
+                var originString = null, prevStr = null, nextStr = null, latexInfo = null;
                 str = " " + str + " ";
                 if (this.latexInput === this.kfEditor.getDocument().activeElement) {
                     this.latexInput.setRangeText(str);
@@ -400,7 +400,14 @@ _p[7] = {
                     latexInfo = this.kfEditor.requestService("syntax.serialization");
                     originString = latexInfo.str;
                     // 拼接latex字符串
-                    originString = originString.substring(0, latexInfo.startOffset) + str + originString.substring(latexInfo.endOffset);
+                    prevStr = originString.substring(0, latexInfo.startOffset);
+                    nextStr = originString.substring(latexInfo.endOffset);
+                    if (str.indexOf("\\placeholder") !== -1) {
+                        prevStr = prevStr.replace(CURSOR_CHAR, "").replace(CURSOR_CHAR, "");
+                        nextStr = nextStr.replace(CURSOR_CHAR, "").replace(CURSOR_CHAR, "");
+                        str = str.replace("\\placeholder", "{" + CURSOR_CHAR + "\\placeholder" + CURSOR_CHAR + "}");
+                    }
+                    originString = prevStr + str + nextStr;
                 }
                 this.restruct(originString);
                 this.updateInput();
@@ -620,6 +627,10 @@ _p[7] = {
                 var value = this.inputBox.value.replace(/[，。；（）]/g, function(match) {
                     return CHARS[match];
                 });
+                var tmp = this.kfEditor.triggerInputEvent(value);
+                if (tmp) {
+                    value = tmp;
+                }
                 this.restruct(value);
                 this.latexInput.value = value.replace(CURSOR_CHAR, "").replace(CURSOR_CHAR, "");
                 this.kfEditor.requestService("ui.update.canvas.view");
@@ -699,7 +710,7 @@ _p[9] = {
                 });
             },
             createCursor: function() {
-                var cursorShape = new kity.Rect(1, 0, 0, 0).fill("black");
+                var cursorShape = new kity.Rect(1, 0, 0, 0).fill("red");
                 cursorShape.setAttr("style", "display: none");
                 this.paper.addShape(cursorShape);
                 return cursorShape;
@@ -1137,6 +1148,15 @@ _p[12] = {
                     _self._readyState = true;
                     _self.triggerReady();
                 }, this.options.resource);
+            },
+            onInput: function(cb) {
+                this.__onViewInputHandler = cb;
+            },
+            triggerInputEvent: function(value) {
+                if (!this.__onViewInputHandler) {
+                    return null;
+                }
+                return this.__onViewInputHandler.call(null, value);
             },
             /**
          * 初始化同步组件
@@ -1997,12 +2017,8 @@ _p[28] = {
             toggleViewState: function() {
                 this.viewState = this.viewState === VIEW_STATE.NO_OVERFLOW ? VIEW_STATE.OVERFLOW : VIEW_STATE.NO_OVERFLOW;
             },
-            disableToolbar: function() {
-                this.toolbarWidget.disable();
-            },
-            enableToolbar: function() {
-                this.toolbarWidget.enable();
-            },
+            disableToolbar: function() {},
+            enableToolbar: function() {},
             closeToolbar: function() {}
         });
         function createScrollbarContainer(doc) {
