@@ -74,6 +74,8 @@
         ckEditor.clear();
 
         jQuery( function ($) {
+            var t1 = +(new Date());
+            console.log('begin jquery:' + t1);
 
             var factory = kf.EditorFactory.create( $( "#eidotr" )[ 0 ], {
                     render: {
@@ -86,6 +88,8 @@
                 uniqueId = location.hash.substring( 1 );
 
             factory.ready( function () {
+
+                console.log('begin factory:' + (new Date()- t1));
 
                 var source = hashParams.source || '\\placeholder';
 
